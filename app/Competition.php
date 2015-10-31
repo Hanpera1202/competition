@@ -11,7 +11,7 @@ class Competition extends Model
         $competition = Competition::join('items', 'competitions.item_id', '=', 'items.id')
             ->where('competitions.start_date', '<=', date('Y-m-d H:i:s'))
             ->where('competitions.end_date', '>=', date('Y-m-d H:i:s'))
-            ->get();
+            ->get(['competitions.id','items.name','items.image_url']);
 
         return $competition;
     }
