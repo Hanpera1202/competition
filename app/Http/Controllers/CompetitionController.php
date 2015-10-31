@@ -8,6 +8,6 @@ class CompetitionController extends Controller
 {
     public function getActive() {
         $competitions = Competition::getActive();
-        return response()->json($competitions);
+        return response()->json(array("competitions" => $competitions));
     }
 }
