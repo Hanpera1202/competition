@@ -6,8 +6,8 @@ use App\Competition;
 
 class CompetitionController extends Controller
 {
-    public function getActive() {
-        $competitions = Competition::getActive();
+    public function getActive($user_id) {
+        $competitions = Competition::getActive($user_id);
         return response()->json(array("competitions" => $competitions));
     }
 }
