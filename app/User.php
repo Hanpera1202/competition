@@ -7,8 +7,6 @@ use DB;
 
 class User extends Model
 {
-    protected $table = 'users';
-
     const CREATED_AT = 'create_date';
     const UPDATED_AT = 'update_date';
 

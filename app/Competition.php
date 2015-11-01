@@ -7,7 +7,9 @@ use DB;
 
 class Competition extends Model
 {
-    //
+    const CREATED_AT = 'create_date';
+    const UPDATED_AT = 'update_date';
+
     public static function getActive($user_id) {
 
         // get active competitions
@@ -30,5 +32,19 @@ class Competition extends Model
                 //->toSql();
 
         return $competition;
+    }
+    
+    public static function apply($user_id, $competition_id) {
+
+        $application = new Application;
+
+        if($application->regist($user_id, $competition_id)) {
+            $competition = new Competition;
+            $competition->where('id', '=', $competition_id)
+                        ->increment('apply_num', 1);
+        }
+
+        return true;
+
     }
 }
