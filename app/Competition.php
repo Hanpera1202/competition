@@ -71,4 +71,23 @@ class Competition extends Model
         return $competition->point;
 
     }
+
+    public static function getResult($user_id) {
+        $now_time = Carbon::now();
+        $results = 
+            DB::table('applications')
+                ->select(DB::raw("applications.result_status,".
+                                 "competitions.id,items.name,items.image_url,".
+                                 "competitions.win_num,competitions.end_date,".
+                                 "competitions.apply_num,items.point,".
+                                 "count(applications.id) as my_apply_num"))
+                ->Join('competitions', 'applications.competition_id', '=', 'competitions.id')
+                ->join('items', 'competitions.item_id', '=', 'items.id')
+                ->where('applications.user_id', '=', $user_id)
+                ->groupBy('competitions.id')
+                ->get();
+                //->toSql();
+
+        return $results;
+    }
 }
