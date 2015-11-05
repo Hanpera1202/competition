@@ -76,7 +76,7 @@ class Competition extends Model
         $now_time = Carbon::now();
         $results = 
             DB::table('applications')
-                ->select(DB::raw("applications.result_status,".
+                ->select(DB::raw("max(applications.win_flag) as result,".
                                  "competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
                                  "competitions.apply_num,items.point,".
@@ -91,7 +91,7 @@ class Competition extends Model
         foreach($results as $key => $result){
             if($result->end_date > $now_time->toDateTimeString()){
                 $results[$key]->progress = "1";
-            }elseif($result->result_status == 0){
+            }elseif(is_null($result->result)){
                 $results[$key]->progress = "2";
             }else{
                 $results[$key]->progress = "3";
