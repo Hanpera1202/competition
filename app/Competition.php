@@ -88,6 +88,16 @@ class Competition extends Model
                 ->get();
                 //->toSql();
 
+        foreach($results as $key => $result){
+            if($result->end_date > $now_time->toDateTimeString()){
+                $results[$key]->progress = "1";
+            }elseif($result->result_status == 0){
+                $results[$key]->progress = "2";
+            }else{
+                $results[$key]->progress = "3";
+            }
+        }
+
         return $results;
     }
 }
