@@ -72,7 +72,7 @@ class Competition extends Model
 
     }
 
-    public static function getResult($user_id) {
+    public static function getResults($user_id) {
         $now_time = Carbon::now();
         $results = 
             DB::table('applications')
@@ -99,5 +99,33 @@ class Competition extends Model
         }
 
         return $results;
+    }
+
+    public static function getResult($user_id, $competition_id) {
+        $now_time = Carbon::now();
+        $result = 
+            DB::table('applications')
+                ->select(DB::raw("max(applications.win_flag) as result,".
+                                 "competitions.id,items.name,items.image_url,".
+                                 "competitions.win_num,competitions.end_date,".
+                                 "competitions.apply_num,items.point,".
+                                 "count(applications.id) as my_apply_num"))
+                ->Join('competitions', 'applications.competition_id', '=', 'competitions.id')
+                ->join('items', 'competitions.item_id', '=', 'items.id')
+                ->where('applications.user_id', '=', $user_id)
+                ->where('applications.competition_id', '=', $competition_id)
+                ->groupBy('competitions.id')
+                ->first();
+                //->toSql();
+
+        if($result->end_date > $now_time->toDateTimeString()){
+            $result->progress = "1";
+        }elseif(is_null($result->result)){
+            $result->progress = "2";
+        }else{
+            $result->progress = "3";
+        }
+
+        return $result;
     }
 }
