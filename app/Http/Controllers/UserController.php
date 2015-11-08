@@ -12,7 +12,9 @@ class UserController extends Controller
     }
     public function getRegistmail($user_id, $mail_address) {
         $user = User::find($user_id);
-        $user->mail_address = $mail_address;
+        // URL safe
+        $mail_address = str_replace(array('_','-'), array('/', '+'), $mail_address);
+        $user->mail_address = base64_decode($mail_address);
         
         return response()->json(array("result" => $user->save()));
     }
