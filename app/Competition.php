@@ -54,9 +54,15 @@ class Competition extends Model
         $now_time = Carbon::now();
         $competition = self::getData($competition_id);
         if($competition == false ||
-           $competition->start_date > $now_time->toDateTimeString() ||
-           $competition->end_date < $now_time->toDateTimeString()){
-            return false;
+           $competition->start_date > $now_time->toDateTimeString()){
+            return array("result" => false,
+                         "reason" => "FAILED",
+                         "competition_id" => $competition_id);
+        }
+        if($competition->end_date < $now_time->toDateTimeString()){
+            return array("result" => false, 
+                         "reason" => "ENDED",
+                         "competition_id" => $competition_id);
         }
 
         DB::transaction(function() use ($user_id, $competition_id){
@@ -68,7 +74,9 @@ class Competition extends Model
                         ->increment('apply_num', 1);
         });
 
-        return $competition->point;
+        return array("result" => true,
+                     "reason" => "SUCCESS",
+                     "competition_id" => $competition->id);
 
     }
 

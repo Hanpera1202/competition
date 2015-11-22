@@ -11,8 +11,8 @@ class CompetitionController extends Controller
         return response()->json(array("competitions" => $competitions));
     }
     public function getApply($user_id, $competition_id) {
-        $points = Competition::apply($user_id, $competition_id);
-        return response()->json(array("decrease_point" => $points));
+        $result = Competition::apply($user_id, $competition_id);
+        return response()->json($result);
     }
     public function getResults($user_id) {
         $results = Competition::getResults($user_id);
