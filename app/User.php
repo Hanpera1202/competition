@@ -7,9 +7,6 @@ use DB;
 
 class User extends Model
 {
-    const CREATED_AT = 'create_date';
-    const UPDATED_AT = 'update_date';
-
     public static function regist($device_id) {
 
         $user = new User;

@@ -8,17 +8,15 @@ use Carbon\Carbon;
 
 class Competition extends Model
 {
-    const CREATED_AT = 'create_date';
-    const UPDATED_AT = 'update_date';
-
     public static function getActive($user_id) {
         $now_time = Carbon::now();
         $competition = 
             DB::table('competitions')
                 ->select(DB::raw("competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
-                                 "competitions.apply_num,items.point,".
-                                 "count(applications.id) as my_apply_num"))
+                                 "competitions.application_num as total_application_num,".
+                                 "applications.application_num as application_num,".
+                                 "items.point"))
                 ->join('items', 'competitions.item_id', '=', 'items.id')
                 ->leftJoin('applications', function($leftJoin) use ($user_id)
                 {
@@ -27,7 +25,6 @@ class Competition extends Model
                 })
                 ->where('competitions.start_date', '<=', $now_time->toDateTimeString())
                 ->where('competitions.end_date', '>=', $now_time->toDateTimeString())
-                ->groupBy('competitions.id')
                 ->get();
                 //->toSql();
 
@@ -39,7 +36,8 @@ class Competition extends Model
             DB::table('competitions')
                 ->select(DB::raw("competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.start_date,".
-                                 "competitions.end_date,competitions.apply_num,".
+                                 "competitions.end_date,".
+                                 "competitions.application_num as total_application_num,".
                                  "items.point"))
                 ->join('items', 'competitions.item_id', '=', 'items.id')
                 ->where('competitions.id', '=', $competition_id)
@@ -66,12 +64,11 @@ class Competition extends Model
         }
 
         DB::transaction(function() use ($user_id, $competition_id){
-
-            $application = new Application;
-            $application->regist($user_id, $competition_id);
-            $competition = new Competition;
-            $competition->where('id', '=', $competition_id)
-                        ->increment('apply_num', 1);
+            $application = Application::firstOrCreate(['user_id' => $user_id,
+                                                       'competition_id' => $competition_id]);
+            $application->increment('application_num', 1);
+            $competition = Competition::find($competition_id);
+            $competition->increment('application_num', 1);
         });
 
         return array("result" => true,
@@ -84,15 +81,15 @@ class Competition extends Model
         $now_time = Carbon::now();
         $results = 
             DB::table('applications')
-                ->select(DB::raw("max(applications.win_flag) as result,".
+                ->select(DB::raw("applications.result,".
                                  "competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
-                                 "competitions.apply_num,items.point,".
-                                 "count(applications.id) as my_apply_num"))
+                                 "competitions.application_num as total_application_num,".
+                                 "applications.application_num as application_num,".
+                                 "items.point"))
                 ->Join('competitions', 'applications.competition_id', '=', 'competitions.id')
                 ->join('items', 'competitions.item_id', '=', 'items.id')
                 ->where('applications.user_id', '=', $user_id)
-                ->groupBy('competitions.id')
                 ->get();
                 //->toSql();
 
@@ -113,22 +110,22 @@ class Competition extends Model
         $now_time = Carbon::now();
         $result = 
             DB::table('applications')
-                ->select(DB::raw("max(applications.win_flag) as result,".
+                ->select(DB::raw("applications.result,".
                                  "competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
-                                 "competitions.apply_num,items.point,".
-                                 "count(applications.id) as my_apply_num"))
+                                 "competitions.application_num as total_application_num,".
+                                 "applications.application_num as application_num,".
+                                 "items.point"))
                 ->Join('competitions', 'applications.competition_id', '=', 'competitions.id')
                 ->join('items', 'competitions.item_id', '=', 'items.id')
                 ->where('applications.user_id', '=', $user_id)
                 ->where('applications.competition_id', '=', $competition_id)
-                ->groupBy('competitions.id')
                 ->first();
                 //->toSql();
 
         if($result->end_date > $now_time->toDateTimeString()){
             $result->progress = "1";
-        }elseif(is_null($result->result)){
+        }elseif($result->result == "0"){
             $result->progress = "2";
         }else{
             $result->progress = "3";
