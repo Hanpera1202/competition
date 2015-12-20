@@ -15,7 +15,7 @@ class Competition extends Model
                 ->select(DB::raw("competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
                                  "competitions.application_num as total_application_num,".
-                                 "applications.application_num as application_num,".
+                                 "ifnull(applications.application_num, 0) as application_num,".
                                  "items.point"))
                 ->join('items', 'competitions.item_id', '=', 'items.id')
                 ->leftJoin('applications', function($leftJoin) use ($user_id)
