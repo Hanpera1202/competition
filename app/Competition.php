@@ -8,7 +8,12 @@ use Carbon\Carbon;
 
 class Competition extends Model
 {
-    public static function getActive($user_id) {
+    public static function getActive($user_unique_id) {
+        $user = User::where('unique_id', '=', $user_unique_id)->first();
+        if(!isset($user->id)){
+            return false;
+        }
+        $user_id = $user->id;
         $now_time = Carbon::now();
         $competition = 
             DB::table('competitions')
@@ -48,7 +53,14 @@ class Competition extends Model
         return false;
     }
     
-    public static function apply($user_id, $competition_id) {
+    public static function apply($user_unique_id, $competition_id) {
+        $user = User::where('unique_id', '=', $user_unique_id)->first();
+        if(!isset($user->id)){
+            return array("result" => false,
+                         "reason" => "FAILED",
+                         "competition_id" => $competition_id);
+        }
+        $user_id = $user->id;
         $now_time = Carbon::now();
         $competition = self::getData($competition_id);
         if($competition == false ||
@@ -77,7 +89,12 @@ class Competition extends Model
 
     }
 
-    public static function getResults($user_id) {
+    public static function getResults($user_unique_id) {
+        $user = User::where('unique_id', '=', $user_unique_id)->first();
+        if(!isset($user->id)){
+            return false;
+        }
+        $user_id = $user->id;
         $now_time = Carbon::now();
         $results = 
             DB::table('applications')
@@ -106,7 +123,12 @@ class Competition extends Model
         return $results;
     }
 
-    public static function getResult($user_id, $competition_id) {
+    public static function getResult($user_unique_id, $competition_id) {
+        $user = User::where('unique_id', '=', $user_unique_id)->firstOrFail();
+        if(!isset($user->id)){
+            return false;
+        }
+        $user_id = $user->id;
         $now_time = Carbon::now();
         $result = 
             DB::table('applications')
@@ -122,6 +144,10 @@ class Competition extends Model
                 ->where('applications.competition_id', '=', $competition_id)
                 ->first();
                 //->toSql();
+
+        if(!$result){
+            return false;
+        }
 
         if($result->end_date > $now_time->toDateTimeString()){
             $result->progress = "1";

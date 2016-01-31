@@ -11,9 +11,10 @@ class User extends Model
 
         $user = new User;
         $user->device_id = $device_id;
+        $user->unique_id = sha1( uniqid( mt_rand() , true ) );
         $user->save();
 
-        return $user->id;
+        return $user->unique_id;
 
     }
 }
