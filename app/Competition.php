@@ -113,7 +113,7 @@ class Competition extends Model
         foreach($results as $key => $result){
             if($result->end_date > $now_time->toDateTimeString()){
                 $results[$key]->progress = "1";
-            }elseif(is_null($result->result)){
+            }elseif($result->result == "0"){
                 $results[$key]->progress = "2";
             }else{
                 $results[$key]->progress = "3";
