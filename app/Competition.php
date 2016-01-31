@@ -98,7 +98,7 @@ class Competition extends Model
         $now_time = Carbon::now();
         $results = 
             DB::table('applications')
-                ->select(DB::raw("applications.result,".
+                ->select(DB::raw("applications.result,applications.receive_flag,".
                                  "competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
                                  "competitions.application_num as total_application_num,".
@@ -132,7 +132,7 @@ class Competition extends Model
         $now_time = Carbon::now();
         $result = 
             DB::table('applications')
-                ->select(DB::raw("applications.result,".
+                ->select(DB::raw("applications.result,applications.receive_flag,".
                                  "competitions.id,items.name,items.image_url,".
                                  "competitions.win_num,competitions.end_date,".
                                  "competitions.application_num as total_application_num,".

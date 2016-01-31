@@ -18,6 +18,7 @@ class CreateApplicationsTable extends Migration
             $table->integer('competition_id');
             $table->integer('application_num');
             $table->boolean('result');
+            $table->boolean('receive_flag');
             $table->boolean('delete_flag');
             $table->timestamps();
         });
