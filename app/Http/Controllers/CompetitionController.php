@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Competition;
+use App\Libs\Crypt;
 
 class CompetitionController extends Controller
 {
@@ -10,7 +11,8 @@ class CompetitionController extends Controller
         $competitions = Competition::getActive($user_unique_id);
         return response()->json(array("competitions" => $competitions));
     }
-    public function getApply($user_unique_id, $competition_id) {
+    public function getApply($user_unique_id, $crypt_competition_id) {
+        $competition_id = Crypt::mc_decrypt($crypt_competition_id);
         $result = Competition::apply($user_unique_id, $competition_id);
         return response()->json($result);
     }

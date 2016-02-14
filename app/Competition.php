@@ -37,6 +37,9 @@ class Competition extends Model
     }
 
     public static function getData($competition_id){
+        if(!is_numeric($competition_id)){
+            return false;
+        }
         $competition = 
             DB::table('competitions')
                 ->select(DB::raw("competitions.id,items.name,items.image_url,".
