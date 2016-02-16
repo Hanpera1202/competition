@@ -6,23 +6,10 @@ class Crypt{
 
     static function mc_decrypt($decrypt) {
         $mc_key = 'yGfJrzEVfDmtbWZS';
-        $decoded = self::base64_urlsafe_decode($decrypt);
+        $decoded = base64_decode($decrypt);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB), MCRYPT_RAND);
-        $decrypted = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $mc_key, trim($decoded), MCRYPT_MODE_ECB, $iv));
-        $ary_decrypted = explode("ex", rtrim( self::pkcs5_unpad($decrypted) ));
-        if(count($ary_decrypted) < 2 || !is_numeric($ary_decrypted[1])){
-            return false;
-        }
-        $now_time = Carbon::now();
-        if($ary_decrypted[1] + 10 < $now_time->timestamp){
-            return false; 
-        }
-        return $ary_decrypted[0];
-    }
-
-    static function base64_urlsafe_decode($val) {
-	$val = str_replace(array('-','_'), array('+', '/'), $val);
-	return base64_decode($val);
+        $decrypted = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $mc_key, $decoded, MCRYPT_MODE_ECB, $iv);
+        return self::pkcs5_unpad($decrypted);
     }
 
     // PKCS5Padding
