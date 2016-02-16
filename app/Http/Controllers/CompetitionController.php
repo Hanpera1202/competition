@@ -24,7 +24,7 @@ class CompetitionController extends Controller
             return response()->json($result);
         }
         $now_time = Carbon::now();
-        if($aply_data["timestamp"] + 10 < $now_time->timestamp){
+        if($apply_data["timestamp"] + 10 < $now_time->timestamp){
             $result = array("result" => false,
                             "reason" => "FAILED",
                             "competition_id" => $apply_data["competition_id"]);
