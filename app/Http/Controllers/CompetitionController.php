@@ -15,21 +15,22 @@ class CompetitionController extends Controller
         return response()->json(array("competitions" => $competitions));
     }
     public function postApply(Request $request, $user_unique_id) {
-        $apply_data = Crypt::mc_decrypt(Request::input('apply_data'));
-        if(count($apply_data) < 2 || !is_numeric($apply_data[1])){
+        $decoded_apply_data = Crypt::mc_decrypt($request->input('apply_data'));
+        parse_str($decoded_apply_data, $apply_data);
+        if(count($apply_data) < 2 || !is_numeric($apply_data["competition_id"])){
             $result = array("result" => false,
                             "reason" => "FAILED",
                             "competition_id" => NULL);
             return response()->json($result);
         }
         $now_time = Carbon::now();
-        if($aply_data[1] + 10 < $now_time->timestamp){
+        if($aply_data["timestamp"] + 10 < $now_time->timestamp){
             $result = array("result" => false,
                             "reason" => "FAILED",
-                            "competition_id" => $apply_data[0]);
+                            "competition_id" => $apply_data["competition_id"]);
             return response()->json($result);
         }
-        $result = Competition::apply($user_unique_id, $apply_data[0]);
+        $result = Competition::apply($user_unique_id, $apply_data["competition_id"]);
         return response()->json($result);
     }
     public function getResults($user_unique_id) {
