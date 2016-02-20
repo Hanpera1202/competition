@@ -7,10 +7,9 @@ use DB;
 
 class User extends Model
 {
-    public static function regist($device_id) {
+    public static function regist() {
 
         $user = new User;
-        $user->device_id = $device_id;
         $user->unique_id = sha1( uniqid( mt_rand() , true ) );
         $user->save();
 

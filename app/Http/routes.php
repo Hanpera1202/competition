@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::post('users', 'UserController@postCreate');
+Route::post('users/{id}', 'UserController@postUpdate');
+Route::get('users/{id}/results', 'UserController@getResults');
+Route::get('users/{id}/results/{id}', 'UserController@getResult');
+Route::post('users/{id}/application', 'UserController@postApplication');
 
-Route::controller('user', 'UserController');
-Route::controller('/', 'CompetitionController');
+Route::get('competitions', 'CompetitionController@getIndex');
