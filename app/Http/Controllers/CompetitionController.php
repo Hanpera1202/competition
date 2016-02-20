@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Competition;
-use App\Libs\Crypt;
-use Carbon\Carbon;
 
 class CompetitionController extends Controller
 {

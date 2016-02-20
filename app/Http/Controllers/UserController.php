@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Competition;
 use App\Libs\Crypt;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
