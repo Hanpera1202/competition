@@ -12,9 +12,9 @@
 */
 
 Route::post('users', 'UserController@postCreate');
-Route::post('users/{id}', 'UserController@postUpdate');
-Route::get('users/{id}/results', 'UserController@getResults');
-Route::get('users/{id}/results/{id}', 'UserController@getResult');
-Route::post('users/{id}/application', 'UserController@postApplication');
+Route::post('users/{user_unique_id}', 'UserController@postUpdate');
+Route::get('users/{user_unique_id}/results', 'UserController@getResults');
+Route::get('users/{user_unique_id}/results/{competition_id}', 'UserController@getResult');
+Route::post('users/{user_unique_id}/application', 'UserController@postApplication');
 
 Route::get('competitions', 'CompetitionController@getIndex');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Competition;
 use App\Libs\Crypt;
 
 class UserController extends Controller
