@@ -18,3 +18,6 @@ Route::get('users/{user_unique_id}/results/{competition_id}', 'UserController@ge
 Route::post('users/{user_unique_id}/application', 'UserController@postApplication');
 
 Route::get('competitions', 'CompetitionController@getIndex');
+
+Route::get('contents/terms', 'ContentController@getTerms');
+
